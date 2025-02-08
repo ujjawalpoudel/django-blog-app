@@ -1,0 +1,32 @@
+name: Auto-Merge Dev to Main
+
+on:
+  push:
+    branches:
+      - dev  # Trigger workflow on push to dev branch
+
+jobs:
+  merge-to-main:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Git
+        run: |
+          git config --global user.name 'github-actions'
+          git config --global user.email 'github-actions@github.com'
+
+      - name: Checkout main branch
+        run: |
+          git fetch origin main
+          git checkout main
+
+      - name: Merge dev into main
+        run: |
+          git merge dev --no-ff --no-edit
+
+      - name: Push changes to main
+        run: |
+          git push origin main
