@@ -16,6 +16,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          token: ${{secrets.GITHUB_TOKEN}}  # Use default GitHub token for push access
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -32,9 +34,11 @@ jobs:
           black .
 
       - name: Commit and Push Changes (if needed)
+        env:
+          DJANGO_BLOG_APP: ${{ secrets.DJANGO_BLOG_APP }}
         run: |
           git config --global user.name 'github-actions'
           git config --global user.email 'github-actions@github.com'
           git add .
           git commit -m "Auto-format code with Black" || echo "No changes to commit"
-          git push origin HEAD:${{ github.ref }}
+          git push https://x-access-token:${DJANGO_BLOG_APP}@github.com/ujjawalpoudel/django-blog-app.git HEAD:${{ github.ref }}
