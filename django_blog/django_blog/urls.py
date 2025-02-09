@@ -22,5 +22,3 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("blog/", include("blog.urls")),
 ]
-
-# TODO: Add the URL configuration for the blog app
