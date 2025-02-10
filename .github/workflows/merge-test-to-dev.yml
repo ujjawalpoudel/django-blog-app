@@ -1,0 +1,37 @@
+name: Merge Test to Dev and Delete Test Branch
+
+on:
+  push:
+    branches:
+      - test
+
+jobs:
+  merge-and-delete:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all branches
+
+      - name: Configure Git
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+
+      - name: Fetch All Branches
+        run: |
+          git fetch --all
+          git branch -r  # Debugging: List remote branches
+
+      - name: Merge Test into Dev
+        run: |
+          git checkout dev
+          git pull origin dev
+          git merge --no-ff origin/test -m "Auto-merge test into dev"
+          git push origin dev
+
+      - name: Delete Test Branch
+        run: |
+          git push origin --delete test
