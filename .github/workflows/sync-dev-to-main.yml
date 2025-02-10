@@ -9,20 +9,26 @@ jobs:
   sync-branches:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Dev Branch
+      - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          ref: dev
-          fetch-depth: 0
+          fetch-depth: 0  # Fetch full history
 
       - name: Configure Git
         run: |
           git config --global user.email "actions@github.com"
           git config --global user.name "GitHub Actions"
 
-      - name: Push Changes to Main
+      - name: Merge Dev into Main
         run: |
           git checkout main
+          git pull origin main
           git merge --no-ff dev -m "Auto-merge dev into main"
           git push origin main
 
+      - name: Merge Main Back into Dev
+        run: |
+          git checkout dev
+          git pull origin dev
+          git merge --no-ff main -m "Sync main back into dev"
+          git push origin dev
